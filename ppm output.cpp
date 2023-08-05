@@ -1,4 +1,5 @@
 #include <iostream>
+#include "point and vector.h"
 
 int main() {
     int cols = 200;
@@ -9,19 +10,16 @@ int main() {
     std::cout << cols << " " << lines << "\n255\n";
 
     int i, j, ir, ig, ib;
-    double r, g, b;
 
     for (j = lines-1; j >= 0; j--) {
         for (i = 0; i < cols; i++) {
-            // r, g, b variam de 0 ate 1, por convencao
-            r = double(i) / double(cols);
-            g = double(j)/double(lines);
-            b = 0.2;
+            //(r, g, b)
+            vec3 col(double(i) / double(cols), double(j)/double(lines), 0.2);
 
             // multiplicar para ficarem no range de 0 a 255
-            ir = int(255.99*r);
-            ig = int(255.99*g);
-            ib = int(255.99*b);
+            ir = int(255.99*col[0]);
+            ig = int(255.99*col[1]);
+            ib = int(255.99*col[2]);
 
             // printar os pixels
             std::cout << ir << " " << ig << " " << ib << "\n";
