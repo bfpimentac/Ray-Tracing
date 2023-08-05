@@ -9,13 +9,13 @@ int main() {
     std::cout << cols << " " << lines << "\n255\n";
 
     int i, j, ir, ig, ib;
-    float r, g, b;
+    double r, g, b;
 
     for (j = lines-1; j >= 0; j--) {
         for (i = 0; i < cols; i++) {
             // r, g, b variam de 0 ate 1, por convencao
-            r = float(i) / float(cols);
-            g = float(j)/float(lines);
+            r = double(i) / double(cols);
+            g = double(j)/double(lines);
             b = 0.2;
 
             // multiplicar para ficarem no range de 0 a 255
