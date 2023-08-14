@@ -101,7 +101,7 @@ inline vec3 operator+(const vec3 &v1, const vec3 &v2) {
 
 // ok
 inline vec3 operator-(const vec3 &v1, const vec3 &v2) {
-    return vec3(v1.vetor[0]-v2.vetor[0], v1.vetor[1]-v2.vetor[1], v1.vetor[3]-v2.vetor[3]);
+    return vec3(v1.vetor[0]-v2.vetor[0], v1.vetor[1]-v2.vetor[1], v1.vetor[2]-v2.vetor[2]);
 }
 
 // ok

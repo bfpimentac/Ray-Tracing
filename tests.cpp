@@ -1,5 +1,5 @@
 #include <iostream>
-#include "point and vector.h"
+#include "ray.hpp"
 
 int main() {
     vec3 vetor1(1, 2, 1), vetor2(2, 1, 2);
@@ -59,4 +59,13 @@ int main() {
 
     // retorna a coordenada x, y e z do vetor
     std::cout << vetor1.x() << " " << vetor1.y() << " " << vetor1.z() << "\n";
+    vetor1.vetor[0] = 1; vetor1.vetor[1] = 2; vetor1.vetor[2] = 1;
+
+    // cria um novo ray
+    ray r1(vetor1, vetor2);
+    std::cout << r1.origin() << " " << r1.direction() << "\n";
+
+    std::cout << 0.7*vec3(1, 1, 1) + 0.3*vec3(0.5, 0.7, 1.0)<< "\n";
+
+    std::cout << r1.origin() - vec3(0, 0, -1) << "\n";
 }
