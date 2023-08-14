@@ -14,7 +14,7 @@ int main() {
     for (j = lines-1; j >= 0; j--) {
         for (i = 0; i < cols; i++) {
             //(r, g, b)
-            vec3 col(double(i) / double(cols), double(j)/double(lines), 0.2);
+            vec3 col(float(i) / float(cols), float(j)/float(lines), 0.2);
 
             // multiplicar para ficarem no range de 0 a 255
             ir = int(255.99*col[0]);
