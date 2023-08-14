@@ -56,4 +56,7 @@ int main() {
 
     // retornando o vetor com coordenadas invertidas
     std::cout << -vetor1 << "\n";
+
+    // retorna a coordenada x, y e z do vetor
+    std::cout << vetor1.x() << " " << vetor1.y() << " " << vetor1.z() << "\n";
 }

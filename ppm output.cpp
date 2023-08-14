@@ -1,20 +1,40 @@
 #include <iostream>
-#include "point and vector.h"
+#include "ray.h"
+
+vec3 color(const ray& r) {
+    // normaliza o vetor diretor do raio
+    vec3 unit_direction = unit_vector(r.direction());
+    float t = 0.5*(unit_direction.y() + 1.0);
+    return (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
+}
 
 int main() {
-    int cols = 200;
-    int lines = 100;
+    int nx = 200;
+    int ny = 100;
 
     // estrutura de um arquivo ppm
     std::cout << "P3\n";
-    std::cout << cols << " " << lines << "\n255\n";
+    std::cout << nx << " " << ny << "\n255\n";
+    
+    vec3 lower_left_corner(-2.0, -1.0, -1.0);
+    vec3 horizontal(4.0, 0.0, 0.0);
+    vec3 vertical(0.0, 2.0, 0.0);
+    vec3 origin(0.0, 0.0, 0.0);
 
     int i, j, ir, ig, ib;
+    float u, v;
 
-    for (j = lines-1; j >= 0; j--) {
-        for (i = 0; i < cols; i++) {
+    for (j = ny-1; j >= 0; j--) {
+        for (i = 0; i < nx; i++) {
+            // u e v sao as coordenadas do pixel
+            u = float(i) / float(nx);
+            v = float(j) / float(ny);
+
+            // raios, origin e um ponto e lower_left_corner + u*horizontal + v*vertical e o vetor + offset
+            ray r(origin, lower_left_corner + u*horizontal + v*vertical);
+
             //(r, g, b)
-            vec3 col(float(i) / float(cols), float(j)/float(lines), 0.2);
+            vec3 col = color(r);
 
             // multiplicar para ficarem no range de 0 a 255
             ir = int(255.99*col[0]);
