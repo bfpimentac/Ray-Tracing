@@ -1,6 +1,6 @@
 #ifndef RAYH
 #define RAYH
-#include "point and vector.h"
+#include "point and vector.hpp"
 
 
 class ray {
