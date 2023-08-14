@@ -1,37 +1,24 @@
 #include <iostream>
-#include "ray.hpp"
+#include "sphere.hpp"
+#include "hitablelist.hpp"
+#include "float.h"
 
-float hit_sphere(const vec3& center, float radius, const ray& r) {
-    vec3 oc = r.origin() - center;
-    float a = dot(r.direction(), r.direction());
-    float b = 2.0 * dot(oc, r.direction());
-    float c = dot(oc, oc) - radius*radius;
-    float discriminant = b*b - 4*a*c;
+vec3 color(const ray& r, hitable *world) {
+    hit_record rec;
+    if (world->hit(r, 0.0, FLT_MAX, rec)) {
+        return 0.5*vec3(rec.normal.x()+1, rec.normal.y()+1, rec.normal.z()+1);
 
-    if (discriminant < 0) {
-        return -1.0;
     } else {
-        // pega o ponto mais próximo da interseção
-        return (-b - sqrt(discriminant)) / (2.0*a);
+        // normaliza o vetor diretor do raio
+        vec3 unit_direction = unit_vector(r.direction());
+        float t = 0.5*(unit_direction.y() + 1.0);
+        return (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
     }
-}
-
-vec3 color(const ray& r) {
-    float t = hit_sphere(vec3(0, 0, -1), 0.5, r);
-    if (t > 0.0) {
-        vec3 N = unit_vector(r.point_at_parameter(t) - vec3(0, 0, -1));
-        return 0.5*vec3(N.x()+1, N.y()+1, N.z()+1);
-    }
-
-    // normaliza o vetor diretor do raio
-    vec3 unit_direction = unit_vector(r.direction());
-    t = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-t)*vec3(1.0, 1.0, 1.0) + t*vec3(0.5, 0.7, 1.0);
 }
 
 int main() {
-    int nx = 200;
-    int ny = 100;
+    int nx = 600;
+    int ny = 300;
 
     // estrutura de um arquivo ppm
     std::cout << "P3\n";
@@ -41,6 +28,11 @@ int main() {
     vec3 horizontal(4.0, 0.0, 0.0);
     vec3 vertical(0.0, 2.0, 0.0);
     vec3 origin(0.0, 0.0, 0.0);
+
+    hitable *list[2];
+    list[0] = new sphere(vec3(0, 0, -1), 0.5);
+    list[1] = new sphere(vec3(0, -100.5, -1), 100);
+    hitable *world = new hitable_list(list, 2);
 
     int i, j, ir, ig, ib;
     float u, v;
@@ -55,7 +47,8 @@ int main() {
             ray r(origin, lower_left_corner + u*horizontal + v*vertical);
 
             //(r, g, b)
-            vec3 col = color(r);
+            vec3 p = r.point_at_parameter(2.0);
+            vec3 col = color(r, world);
 
             // multiplicar para ficarem no range de 0 a 255
             ir = int(255.99*col[0]);
