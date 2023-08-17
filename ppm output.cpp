@@ -1,7 +1,12 @@
 #include <iostream>
+#include <random>
+
 #include "sphere.hpp"
 #include "hitablelist.hpp"
+#include "camera.hpp"
+
 #include "float.h"
+
 
 vec3 color(const ray& r, hitable *world) {
     hit_record rec;
@@ -17,39 +22,48 @@ vec3 color(const ray& r, hitable *world) {
 }
 
 int main() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::uniform_real_distribution<float> dist(0.0, 1.0);
+
     int nx = 600;
     int ny = 300;
+    int ns = 300; // numero de amostras
 
     // estrutura de um arquivo ppm
     std::cout << "P3\n";
     std::cout << nx << " " << ny << "\n255\n";
-    
-    vec3 lower_left_corner(-2.0, -1.0, -1.0);
-    vec3 horizontal(4.0, 0.0, 0.0);
-    vec3 vertical(0.0, 2.0, 0.0);
-    vec3 origin(0.0, 0.0, 0.0);
 
     hitable *list[2];
     list[0] = new sphere(vec3(0, 0, -1), 0.5);
     list[1] = new sphere(vec3(0, -100.5, -1), 100);
     hitable *world = new hitable_list(list, 2);
 
-    int i, j, ir, ig, ib;
+    int i, j, s, ir, ig, ib;
     float u, v;
+    camera cam;
 
     for (j = ny-1; j >= 0; j--) {
         for (i = 0; i < nx; i++) {
-            // u e v sao as coordenadas do pixel
-            u = float(i) / float(nx);
-            v = float(j) / float(ny);
+            vec3 col(0, 0, 0);
 
-            // raios, origin e um ponto e lower_left_corner + u*horizontal + v*vertical e o vetor + offset
-            ray r(origin, lower_left_corner + u*horizontal + v*vertical);
+            for (s = 0; s < ns; s++) {
+                // u e v sao as coordenadas do pixel
+                u = float(i + dist(gen)) / float(nx); // u e v variam de 0 a 1
+                v = float(j + dist(gen)) / float(ny);
 
-            //(r, g, b)
-            vec3 p = r.point_at_parameter(2.0);
-            vec3 col = color(r, world);
+                // raios, origin e um ponto e lower_left_corner + u*horizontal + v*vertical e o vetor + offset
+                ray r = cam.get_ray(u, v);
 
+                //(r, g, b)
+                vec3 p = r.point_at_parameter(2.0);
+
+                col += color(r, world);
+            }
+
+            col /= float(ns); // media das cores
+            
             // multiplicar para ficarem no range de 0 a 255
             ir = int(255.99*col[0]);
             ig = int(255.99*col[1]);

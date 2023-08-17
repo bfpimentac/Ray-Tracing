@@ -1,5 +1,6 @@
 #include <iostream>
 #include "ray.hpp"
+#include <random>
 
 int main() {
     vec3 vetor1(1, 2, 1), vetor2(2, 1, 2);
@@ -72,4 +73,15 @@ int main() {
     std::cout << r1.origin() - vec3(0, 0, -1) << "\n";
 
     std::cout << unit_vector(r1.point_at_parameter(2) - vec3(0, 0, -1)) << "\n";
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::uniform_real_distribution<float> dist(0.0, 1.0);
+
+    for (int i = 0; i < 10; i++) {
+        std::cout << dist(gen) << " ";
+    }
+
+    std::cout << "\n";
 }
