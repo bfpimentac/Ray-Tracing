@@ -24,7 +24,7 @@ vec3 random_in_unit_sphere() {
 
 vec3 color(const ray& r, hitable *world) {
     hit_record rec;
-    if (world->hit(r, 0.0, FLT_MAX, rec)) {
+    if (world->hit(r, 0.0001, FLT_MAX, rec)) {
         vec3 target = rec.p + rec.normal + random_in_unit_sphere();
 
         return 0.5*color(ray(rec.p, target-rec.p), world); // recursao
@@ -46,11 +46,12 @@ int main() {
     std::cout << "P3\n";
     std::cout << nx << " " << ny << "\n255\n";
 
-    hitable *list[2];
+    int const n_objects = 2;
+    hitable *list[n_objects];
     list[0] = new sphere(vec3(0, 0, -1), 0.5);
     list[1] = new sphere(vec3(0, -100.5, -1), 100);
     //list[2] = new sphere(vec3(0, 0, -120), 100);
-    hitable *world = new hitable_list(list, 2);
+    hitable *world = new hitable_list(list, n_objects);
 
     int i, j, s, ir, ig, ib;
     float u, v;
