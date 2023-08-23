@@ -76,6 +76,7 @@ int main() {
 
             col /= float(ns); // media das cores
             
+            col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2])); // gamma correction
             // multiplicar para ficarem no range de 0 a 255
             ir = int(255.99*col[0]);
             ig = int(255.99*col[1]);
