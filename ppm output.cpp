@@ -1,34 +1,28 @@
 #include <iostream>
-#include <random>
+// #include <random>
 
 #include "sphere.hpp"
-#include "hitablelist.hpp"
+#include "material.hpp"
 #include "camera.hpp"
 
 #include "float.h"
 
-std::random_device rd;
-std::mt19937 gen(rd());
-std::uniform_real_distribution<float> dist(0.0, 1.0);
-
-// pega um ponto aleatorio da esfera unitaria
-vec3 random_in_unit_sphere() {
-    vec3 p;
-    do {
-        p = 2.0*vec3(dist(gen), dist(gen), dist(gen)) - vec3(1, 1, 1);
-    } while (p.squared_length() >= 1.0);
-
-    return p;
-}
+// std::random_device rd;
+// std::mt19937 gen(rd());
+// std::uniform_real_distribution<float> dist(0.0, 1.0);
 
 
-vec3 color(const ray& r, hitable *world) {
+vec3 color(const ray& r, hitable *world, int depth) {
     hit_record rec;
-    if (world->hit(r, 0.0001, FLT_MAX, rec)) {
-        vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+    if (world->hit(r, 0.001, FLT_MAX, rec)) {
+        ray scattered;
+        vec3 attenuation;
+        if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)) {
+            return attenuation*color(scattered, world, depth+1);
+        } else {
+            return vec3(0, 0, 0);
+        }
 
-        return 0.5*color(ray(rec.p, target-rec.p), world); // recursao
-        //return 0.5*vec3(rec.normal.x()+1, rec.normal.y()+1, rec.normal.z()+1);
     } else {
         // normaliza o vetor diretor do raio
         vec3 unit_direction = unit_vector(r.direction());
@@ -46,12 +40,13 @@ int main() {
     std::cout << "P3\n";
     std::cout << nx << " " << ny << "\n255\n";
 
-    int const n_objects = 2;
-    hitable *list[n_objects];
-    list[0] = new sphere(vec3(0, 0, -1), 0.5);
-    list[1] = new sphere(vec3(0, -100.5, -1), 100);
-    //list[2] = new sphere(vec3(0, 0, -120), 100);
-    hitable *world = new hitable_list(list, n_objects);
+    //int const n_objects = 4;
+    hitable *list[4];
+    list[0] = new sphere(vec3(0, 0, -1), 0.5, new lambertian(vec3(0.8, 0.3, 0.3)));
+    list[1] = new sphere(vec3(0, -100.5, -1), 100, new lambertian(vec3(0.8, 0.8, 0.0)));
+    list[2] = new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2)));
+    list[3] = new sphere(vec3(-1, 0, -1), 0.5, new metal(vec3(0.8, 0.8, 0.8)));
+    hitable *world = new hitable_list(list, 4);
 
     int i, j, s, ir, ig, ib;
     float u, v;
@@ -72,7 +67,7 @@ int main() {
                 //(r, g, b)
                 vec3 p = r.point_at_parameter(2.0);
 
-                col += color(r, world);
+                col += color(r, world, 0);
             }
 
             col /= float(ns); // media das cores

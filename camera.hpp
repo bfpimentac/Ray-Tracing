@@ -19,6 +19,7 @@ class camera {
             origin = vec3(0.0, 0.0, 0.0);
         }
         
+        // u e v sao as coordenadas da imagem
         ray get_ray(float u, float v) {
             return ray(origin, lower_left_corner + u*horizontal + v*vertical - origin);
         }

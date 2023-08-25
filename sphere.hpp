@@ -8,9 +8,10 @@ class sphere: public hitable {
     public:
         vec3 center;
         float radius;
+        material *mat_ptr;
 
         sphere() {}
-        sphere(vec3 cen, float r) : center(cen), radius(r) {};
+        sphere(vec3 cen, float r, material* m_p) : center(cen), radius(r), mat_ptr(m_p) {};
 
         virtual bool hit(const ray& r, float t_min, float t_max, hit_record& rec) const;
 };
