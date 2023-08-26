@@ -24,20 +24,22 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const 
     float discriminant = b*b - a*c;
 
     if (discriminant > 0) {
-        float temp = (-b - sqrt(b*b-a*c))/a;
+        float temp = (-b - sqrt(discriminant))/a;
         if (temp < t_max && temp > t_min) {
             rec.t = temp; // t do ponto de intersecao mais proximo
             rec.p = r.point_at_parameter(rec.t); // ponto de intersecao
             rec.normal = (rec.p - center) / radius; // normal do ponto de intersecao
+            rec.mat_ptr = mat_ptr; // ponteiro para o material do objeto
             return true;
         }
 
         // caso a primeira raiz nao satisfaca a condicao, testaremos a segunda
-        temp = (-b + sqrt(b*b-a*c))/a;
+        temp = (-b + sqrt(discriminant))/a;
         if (temp < t_max && temp > t_min) {
             rec.t = temp; // t do ponto de intersecao mais proximo
             rec.p = r.point_at_parameter(rec.t); // ponto de intersecao
             rec.normal = (rec.p - center) / radius; // normal do ponto de intersecao
+            rec.mat_ptr = mat_ptr; // ponteiro para o material do objeto
             return true;
         }
     }
