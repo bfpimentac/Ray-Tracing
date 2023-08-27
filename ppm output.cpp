@@ -2,6 +2,7 @@
 // #include <random>
 
 #include "sphere.hpp"
+#include "plane.hpp"
 #include "material.hpp"
 #include "camera.hpp"
 
@@ -43,9 +44,10 @@ int main() {
     //int const n_objects = 4;
     hitable *list[4];
     list[0] = new sphere(vec3(0, 0, -1), 0.5, new lambertian(vec3(0.8, 0.3, 0.3)));
-    list[1] = new sphere(vec3(0, -100.5, -1), 100, new lambertian(vec3(0.8, 0.8, 0.0)));
-    list[2] = new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2), 0.3));
-    list[3] = new sphere(vec3(-1, 0, -1), 0.5, new metal(vec3(0.8, 0.8, 0.8), 1.0));
+    //list[1] = new sphere(vec3(0, -100.5, -1), 100, new lambertian(vec3(0.8, 0.8, 0.0)));
+    list[1] = new sphere(vec3(1, 0, -1), 0.5, new metal(vec3(0.8, 0.6, 0.2), 0.3));
+    list[2] = new sphere(vec3(-1, 0, -1), 0.5, new metal(vec3(0.8, 0.8, 0.8), 1.0));
+    list[3] = new plane(vec3(0, -0.5, 0), unit_vector(vec3(0,2,0)), new metal(vec3(0.3, 0.1, 0.8), 0.3));
     hitable *world = new hitable_list(list, 4);
 
     int i, j, s, ir, ig, ib;
